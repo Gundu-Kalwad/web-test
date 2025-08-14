@@ -1,60 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Code Agent Panel</title>
-<style>
-body { font-family: sans-serif; margin:1rem; background:#0b0f14; color:#e6edf3; }
-button { padding:0.5rem 1rem; margin:0.5rem 0; cursor:pointer; }
-pre { background:#0a111b; padding:1rem; border-radius:8px; max-height:300px; overflow-y:auto; white-space:pre-wrap;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Puter Chatbot</title>
+  <style>
+    :root { color-scheme: dark light; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 24px; background: #0e0f11; color: #eaecef; }
+    .container { max-width: 720px; margin: 0 auto; }
+    h1 { font-size: 20px; font-weight: 600; margin: 0 0 12px; }
+    .card { border: 1px solid #2a2f3a; border-radius: 12px; padding: 16px; background: #14161a; }
+    .row { display: flex; gap: 8px; margin-top: 12px; }
+    input, button, textarea { border-radius: 10px; border: 1px solid #2a2f3a; background: #0f1115; color: #eaecef; }
+    input, textarea { padding: 10px 12px; width: 100%; }
+    button { padding: 10px 14px; cursor: pointer; border: 1px solid #335eea33; background: #1b2130; }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    .muted { color: #a3a8b3; font-size: 12px; }
+    .log { font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; word-break: break-word; background: #0b0d11; border: 1px dashed #2a2f3a; padding: 10px; border-radius: 8px; height: 220px; overflow: auto; }
+  </style>
+  <script src="https://js.puter.com/v2/"></script>
+  <script>
+    function normalizeResponse(resp) {
+      if (typeof resp === 'string') return resp;
+      try {
+        if (resp && resp.message && typeof resp.message.content === 'string') return resp.message.content;
+        if (Array.isArray(resp?.choices) && resp.choices[0]?.message?.content) return resp.choices[0].message.content;
+        if (typeof resp?.content === 'string') return resp.content;
+      } catch (_) {}
+      return JSON.stringify(resp);
+    }
+
+    async function askPuter(prompt) {
+      if (typeof puter === 'undefined' || !puter.ai || !puter.ai.chat) {
+        return 'Puter SDK not ready. Please wait and try again.';
+      }
+      try {
+        const resp = await puter.ai.chat(prompt);
+        return normalizeResponse(resp);
+      } catch (e) {
+        return 'Chat failed: ' + String(e);
+      }
+    }
+
+    // API mode: if url has ?api=1&prompt=...
+    async function maybeApiMode() {
+      const params = new URLSearchParams(location.search);
+      if (!params.has('api')) return false;
+      const prompt = params.get('prompt') || '';
+      const answer = await askPuter(prompt);
+      const body = { ok: true, prompt, answer };
+      // Render pure JSON so the client can fetch and parse
+      document.open();
+      document.write(JSON.stringify(body));
+      document.close();
+      return true;
+    }
+
+    // Expose window API for embedding or debugging
+    window.chatApi = { ask: askPuter };
+
+    // postMessage API: send {type:'ask', prompt:'...'} and receive {type:'answer', text:'...'}
+    window.addEventListener('message', async (ev) => {
+      const data = ev?.data || {};
+      if (data && data.type === 'ask') {
+        const text = await askPuter(data.prompt);
+        ev.source && ev.source.postMessage({ type: 'answer', text }, '*');
+      }
+    });
+  </script>
 </head>
 <body>
-<h2>Code Agent (Puter.js)</h2>
-<button id="pickFile">Pick Code File</button>
-<button id="sendEditor">Use Editor Content</button>
-<pre id="output"></pre>
+  <div class="container" id="ui" style="display:none">
+    <h1>Puter Chatbot</h1>
+    <div class="card">
+      <div class="muted">Status: <span id="status">Loading SDK…</span></div>
+      <div class="muted" style="margin-top:6px;">Type a message and press Ask. You can also call the API with <code>?api=1&prompt=Hello</code>.</div>
+      <div class="row">
+        <input id="prompt" placeholder="Ask me anything (e.g., what is 2+2?)" />
+        <button id="askBtn" disabled>Ask</button>
+      </div>
+      <div class="row">
+        <textarea id="answer" rows="8" placeholder="Answer will appear here" readonly></textarea>
+      </div>
+      <div class="row">
+        <button id="copyBtn">Copy Answer</button>
+        <button id="clearBtn">Clear</button>
+      </div>
+    </div>
 
-<script src="https://js.puter.com/v2/"></script>
-<script>
-async function rpc(method, params={}) {
-  return new Promise((resolve, reject) => {
-    const id = Math.random().toString(36).slice(2);
-    const handler = (ev) => {
-      const msg = ev.data;
-      if (msg?.rpc_result?.id === id) { window.removeEventListener('message', handler); resolve(msg.rpc_result.result); }
-      else if (msg?.rpc_error?.id === id) { window.removeEventListener('message', handler); reject(new Error(msg.rpc_error.message)); }
-    };
-    window.addEventListener('message', handler);
-    window.ProCodingHost?.postMessage(JSON.stringify({ id, method, params }));
-  });
-}
+    <h2 style="margin-top:24px; font-size:16px;">Integration</h2>
+    <div class="card">
+      <div class="muted">HTTP API (GET): <code>https://YOUR_GH_PAGES_URL/index.html?api=1&prompt=Hello</code></div>
+      <div class="muted">Returns JSON body: <code>{ ok: true, prompt: "...", answer: "..." }</code></div>
+      <div class="muted">JS API: <code>window.chatApi.ask(prompt)</code></div>
+      <div class="muted">postMessage: send <code>{ type:'ask', prompt }</code> → receive <code>{ type:'answer', text }</code></div>
+    </div>
 
-const output = document.getElementById('output');
+    <div style="height: 24px"></div>
+    <div class="log" id="log"></div>
+  </div>
 
-function log(msg){ output.textContent += msg + "\n"; output.scrollTop = output.scrollHeight; }
+  <script>
+    (async function init() {
+      const isApi = await maybeApiMode();
+      if (isApi) return; // API mode already responded
 
-document.getElementById('pickFile').addEventListener('click', async ()=>{
-  try {
-    const file = await rpc('host.fs.openDocument');
-    const data = await rpc('host.fs.readFileText', { uri: file.uri });
-    log(`File Loaded: ${file.name}\n${data.content}`);
-    const res = await puter.ai.chat(data.content, { model: "gpt-4o" });
-    log(`GPT Response:\n${res.message?.content || res}`);
-  } catch(err){ log("Error: "+err.message); }
-});
+      const promptEl = document.getElementById('prompt');
+      const answerEl = document.getElementById('answer');
+      const askBtn = document.getElementById('askBtn');
+      const copyBtn = document.getElementById('copyBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const logEl = document.getElementById('log');
+      const ui = document.getElementById('ui');
+      const statusEl = document.getElementById('status');
+      ui.style.display = '';
 
-document.getElementById('sendEditor').addEventListener('click', async ()=>{
-  try {
-    const contentData = await rpc('host.editor.getCurrentContent');
-    log(`Editor Content:\n${contentData.content}`);
-    const res = await puter.ai.chat(contentData.content, { model: "gpt-4o" });
-    log(`GPT Response:\n${res.message?.content || res}`);
-    await rpc('host.editor.setContent', { content: res.message?.content || contentData.content });
-    await rpc('host.editor.saveActiveDocument');
-  } catch(err){ log("Error: "+err.message); }
-});
-</script>
+      function log(m) { if (logEl) { logEl.textContent += (m + '\n'); logEl.scrollTop = logEl.scrollHeight; } }
+
+      // Wait for Puter SDK readiness
+      async function waitForPuterReady(timeoutMs = 10000) {
+        const start = Date.now();
+        while (Date.now() - start < timeoutMs) {
+          if (typeof puter !== 'undefined' && puter?.ai?.chat) return true;
+          await new Promise(r => setTimeout(r, 100));
+        }
+        return false;
+      }
+
+      const ready = await waitForPuterReady();
+      if (ready) {
+        statusEl.textContent = 'Ready';
+        askBtn.disabled = false;
+      } else {
+        statusEl.textContent = 'SDK not available. Check network.';
+      }
+
+      askBtn.addEventListener('click', async () => {
+        askBtn.disabled = true;
+        const q = promptEl.value;
+        const a = await window.chatApi.ask(q);
+        answerEl.value = a;
+        askBtn.disabled = !ready;
+        log('Asked: ' + q + ' → ' + a);
+      });
+
+      copyBtn.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(answerEl.value || ''); log('Copied'); } catch (e) { log('Copy failed'); }
+      });
+
+      clearBtn.addEventListener('click', () => { answerEl.value = ''; promptEl.value=''; });
+    })();
+  </script>
 </body>
 </html>
