@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Code Agent Panel</title>
+<style>
+body { font-family: sans-serif; margin:1rem; background:#0b0f14; color:#e6edf3; }
+button { padding:0.5rem 1rem; margin:0.5rem 0; cursor:pointer; }
+pre { background:#0a111b; padding:1rem; border-radius:8px; max-height:300px; overflow-y:auto; white-space:pre-wrap;}
+</style>
+</head>
+<body>
+<h2>Code Agent (Puter.js)</h2>
+<button id="pickFile">Pick Code File</button>
+<button id="sendEditor">Use Editor Content</button>
+<pre id="output"></pre>
+
+<script src="https://js.puter.com/v2/"></script>
+<script>
+async function rpc(method, params={}) {
+  return new Promise((resolve, reject) => {
+    const id = Math.random().toString(36).slice(2);
+    const handler = (ev) => {
+      const msg = ev.data;
+      if (msg?.rpc_result?.id === id) { window.removeEventListener('message', handler); resolve(msg.rpc_result.result); }
+      else if (msg?.rpc_error?.id === id) { window.removeEventListener('message', handler); reject(new Error(msg.rpc_error.message)); }
+    };
+    window.addEventListener('message', handler);
+    window.ProCodingHost?.postMessage(JSON.stringify({ id, method, params }));
+  });
+}
+
+const output = document.getElementById('output');
+
+function log(msg){ output.textContent += msg + "\n"; output.scrollTop = output.scrollHeight; }
+
+document.getElementById('pickFile').addEventListener('click', async ()=>{
+  try {
+    const file = await rpc('host.fs.openDocument');
+    const data = await rpc('host.fs.readFileText', { uri: file.uri });
+    log(`File Loaded: ${file.name}\n${data.content}`);
+    const res = await puter.ai.chat(data.content, { model: "gpt-4o" });
+    log(`GPT Response:\n${res.message?.content || res}`);
+  } catch(err){ log("Error: "+err.message); }
+});
+
+document.getElementById('sendEditor').addEventListener('click', async ()=>{
+  try {
+    const contentData = await rpc('host.editor.getCurrentContent');
+    log(`Editor Content:\n${contentData.content}`);
+    const res = await puter.ai.chat(contentData.content, { model: "gpt-4o" });
+    log(`GPT Response:\n${res.message?.content || res}`);
+    await rpc('host.editor.setContent', { content: res.message?.content || contentData.content });
+    await rpc('host.editor.saveActiveDocument');
+  } catch(err){ log("Error: "+err.message); }
+});
+</script>
+</body>
+</html>
