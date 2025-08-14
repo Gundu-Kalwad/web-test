@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Puter.js ChatGPT-4o Mobile</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #0b0f14;
+      color: #e6edf3;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 1rem; text-align: center; }
+    .container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: .75rem; }
+    input {
+      width: 100%;
+      padding: .75rem;
+      border-radius: 8px;
+      border: 1px solid #223043;
+      font-size: 1rem;
+    }
+    button {
+      padding: .75rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background: #182232;
+      color: #e6edf3;
+      cursor: pointer;
+    }
+    button:hover { background: #1d2a3e; }
+    pre {
+      background: #0a111b;
+      padding: 1rem;
+      border-radius: 8px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      border: 1px solid #1e2a3a;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chat with GPT-4o (Puter.js)</h1>
+  <div class="container">
+    <input id="prompt" type="text" placeholder="Ask something..." autofocus>
+    <button id="send">Send</button>
+    <pre id="output"></pre>
+  </div>
+
+  <!-- Puter.js library -->
+  <script src="https://js.puter.com/v2/"></script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const output = document.getElementById('output');
+      const promptInput = document.getElementById('prompt');
+      const sendBtn = document.getElementById('send');
+
+      const log = msg => {
+        output.textContent += msg + "\n";
+        output.scrollTop = output.scrollHeight;
+      };
+
+      sendBtn.addEventListener('click', async () => {
+        const msg = promptInput.value.trim();
+        if (!msg) return;
+        log(`You: ${msg}`);
+        promptInput.value = '';
+
+        try {
+          // Call GPT-4o using puter.ai.chat
+          const res = await puter.ai.chat(msg, { model: "gpt-4o" });
+          const reply = res.message?.content || res;
+          log(`GPT: ${reply}`);
+        } catch (err) {
+          log(`Error: ${err.message}`);
+        }
+      });
+
+      // Optional: allow Enter key to send
+      promptInput.addEventListener('keypress', e => {
+        if (e.key === 'Enter') sendBtn.click();
+      });
+    });
+  </script>
+</body>
+</html>
