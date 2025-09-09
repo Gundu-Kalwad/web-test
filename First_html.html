@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Basics: Questions and Answers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #2980b9;
+        }
+        code {
+            background-color: #ecf0f1;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        pre {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        ul, ol {
+            margin-left: 20px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>HTML Basics: Questions and Answers</h1>
+
+        <section>
+            <h2>1. What is HTML? Explain features of HTML.</h2>
+            <p>HTML (HyperText Markup Language) is the standard markup language used to create webpages. It describes the structure of a webpage using a set of elements and tags. Web browsers read HTML documents and display them as webpages.</p>
+            <p><strong>Features of HTML:</strong></p>
+            <ol>
+                <li>Simple and Easy – HTML is easy to learn and implement.</li>
+                <li>Platform Independent – Works on any operating system and browser.</li>
+                <li>Hyperlink Support – Allows linking between pages using &lt;a&gt; tag.</li>
+                <li>Multimedia Support – Can embed images, audio, video, and animations.</li>
+                <li>Structured Content – Provides headings, lists, tables, forms, etc.</li>
+                <li>Supported Everywhere – All modern browsers support HTML.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>2. What is HTML document?</h2>
+            <p>An HTML document is a file with .html or .htm extension that contains HTML code. It is the main unit of a webpage, read and interpreted by a web browser.</p>
+            <p><strong>Main parts of an HTML document:</strong></p>
+            <ol>
+                <li>DOCTYPE Declaration → Defines document type (&lt;!DOCTYPE html&gt;).</li>
+                <li>Root Element &lt;html&gt; → Contains all other elements.</li>
+                <li>Head Section &lt;head&gt; → Metadata, title, CSS, JavaScript.</li>
+                <li>Body Section &lt;body&gt; → Visible content such as text, images, links.</li>
+            </ol>
+            <p>So, an HTML document is the backbone of a webpage that organizes and displays information.</p>
+        </section>
+
+        <section>
+            <h2>3. Explain the basic structure of an HTML document.</h2>
+            <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;My First Page&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Welcome&lt;/h1&gt;
+    &lt;p&gt;This is a sample webpage.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>&lt;!DOCTYPE html&gt; – Defines HTML version.</li>
+                <li>&lt;html&gt; – Root of the page.</li>
+                <li>&lt;head&gt; – Contains title, metadata, links to CSS/JS.</li>
+                <li>&lt;title&gt; – Name shown in browser tab.</li>
+                <li>&lt;body&gt; – Main content displayed to users.</li>
+            </ul>
+            <p>This structure is mandatory for every HTML document.</p>
+        </section>
+
+        <section>
+            <h2>4. Explain the following tags with an example.</h2>
+            <h3>a) Header tag &lt;h1&gt; to &lt;h6&gt;</h3>
+            <p>Used for headings. &lt;h1&gt; is the largest, &lt;h6&gt; is the smallest.</p>
+            <pre><code>&lt;h1&gt;Main Title&lt;/h1&gt;
+&lt;h3&gt;Sub Title&lt;/h3&gt;</code></pre>
+
+            <h3>b) Paragraph tag &lt;p&gt;</h3>
+            <p>Defines a block of text.</p>
+            <pre><code>&lt;p&gt;This is a paragraph.&lt;/p&gt;</code></pre>
+
+            <h3>c) Subscript &lt;sub&gt; and Superscript &lt;sup&gt;</h3>
+            <p>Used in scientific and mathematical expressions.</p>
+            <pre><code>H&lt;sub&gt;2&lt;/sub&gt;O → Water formula
+x&lt;sup&gt;2&lt;/sup&gt; + y&lt;sup&gt;2&lt;/sup&gt; → Equation</code></pre>
+        </section>
+
+        <section>
+            <h2>5. Explain an HTML element where we demonstrate working with text tags.</h2>
+            <p>HTML provides formatting tags to style text. For example:</p>
+            <pre><code>&lt;p&gt;&lt;b&gt;Bold&lt;/b&gt;, &lt;i&gt;Italic&lt;/i&gt;, &lt;u&gt;Underline&lt;/u&gt;, &lt;mark&gt;Highlighted&lt;/mark&gt;&lt;/p&gt;</code></pre>
+            <p><strong>Explanation:</strong></p>
+            <ul>
+                <li>&lt;b&gt; → Bold text.</li>
+                <li>&lt;i&gt; → Italic text.</li>
+                <li>&lt;u&gt; → Underlined text.</li>
+                <li>&lt;mark&gt; → Highlights text.</li>
+            </ul>
+            <p>Thus, text tags allow emphasis and formatting to improve readability of web content.</p>
+        </section>
+
+        <section>
+            <h2>6. Explain table tag along with its specific property.</h2>
+            <p>Tables are created using &lt;table&gt; element in HTML.</p>
+            <pre><code>&lt;table border="1" cellpadding="5" cellspacing="2"&gt;
+  &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Age&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;John&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;Ana&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</code></pre>
+            <p><strong>Properties/Attributes:</strong></p>
+            <ol>
+                <li>border – Defines table border.</li>
+                <li>cellpadding – Space inside a cell.</li>
+                <li>cellspacing – Space between cells.</li>
+                <li>align – Alignment of table.</li>
+                <li>width – Sets table width.</li>
+            </ol>
+        </section>
+
+        <section>
+            <h2>7. What is a list? Explain different types of lists.</h2>
+            <p>A list is a collection of related items presented in an organized way. HTML supports three types:</p>
+            <h3>1. Ordered List &lt;ol&gt; – Items are numbered.</h3>
+            <pre><code>&lt;ol&gt;&lt;li&gt;Apple&lt;/li&gt;&lt;li&gt;Banana&lt;/li&gt;&lt;/ol&gt;</code></pre>
+
+            <h3>2. Unordered List &lt;ul&gt; – Items are bulleted.</h3>
+            <pre><code>&lt;ul&gt;&lt;li&gt;Milk&lt;/li&gt;&lt;li&gt;Bread&lt;/li&gt;&lt;/ul&gt;</code></pre>
+
+            <h3>3. Definition List &lt;dl&gt; – Contains terms and definitions.</h3>
+            <pre><code>&lt;dl&gt;
+  &lt;dt&gt;HTML&lt;/dt&gt;&lt;dd&gt;Markup Language&lt;/dd&gt;
+  &lt;dt&gt;CSS&lt;/dt&gt;&lt;dd&gt;Styling Language&lt;/dd&gt;
+&lt;/dl&gt;</code></pre>
+        </section>
+
+        <section>
+            <h2>8. Explain different form controls and elements with an example.</h2>
+            <p>Forms are used to collect user input. Common controls are:</p>
+            <ul>
+                <li>Textbox: &lt;input type="text"&gt;</li>
+                <li>Password field: &lt;input type="password"&gt;</li>
+                <li>Radio button: &lt;input type="radio" name="g"&gt; Male</li>
+                <li>Checkbox: &lt;input type="checkbox"&gt; Music</li>
+                <li>Textarea: &lt;textarea&gt;&lt;/textarea&gt;</li>
+                <li>Dropdown: &lt;select&gt;&lt;option&gt;Option1&lt;/option&gt;&lt;/select&gt;</li>
+                <li>Button: &lt;input type="submit" value="Submit"&gt;</li>
+            </ul>
+            <p><strong>Example:</strong></p>
+            <pre><code>&lt;form&gt;
+  Name: &lt;input type="text"&gt;&lt;br&gt;
+  Gender: &lt;input type="radio" name="g"&gt; Male
+          &lt;input type="radio" name="g"&gt; Female &lt;br&gt;
+  &lt;input type="submit" value="Submit"&gt;
+&lt;/form&gt;</code></pre>
+        </section>
+
+        <section>
+            <h2>9. Write a short note on:</h2>
+            <h3>a) Working with Hyperlinks</h3>
+            <p>Created using &lt;a&gt; tag with href attribute.</p>
+            <p>Used to link web pages, sections, or external sites.</p>
+            <pre><code>&lt;a href="https://example.com"&gt;Visit Example&lt;/a&gt;</code></pre>
+            <p>Can also link to email (mailto:) or file downloads.</p>
+
+            <h3>b) Frames</h3>
+            <p>Used to divide the browser window into multiple sections, each showing a different document.</p>
+            <pre><code>&lt;frameset cols="50%,50%"&gt;
+  &lt;frame src="left.html"&gt;
+  &lt;frame src="right.html"&gt;
+&lt;/frameset&gt;</code></pre>
+            <p>Now replaced by CSS and &lt;iframe&gt; for better practice.</p>
+
+            <h3>c) Images and Multimedia</h3>
+            <p>Image: &lt;img src="pic.jpg" alt="Description" width="200"&gt;</p>
+            <p>Audio:</p>
+            <pre><code>&lt;audio controls&gt;
+  &lt;source src="song.mp3" type="audio/mpeg"&gt;
+&lt;/audio&gt;</code></pre>
+            <p>Video:</p>
+            <pre><code>&lt;video controls width="300"&gt;
+  &lt;source src="movie.mp4" type="video/mp4"&gt;
+&lt;/video&gt;</code></pre>
+            <p>These tags enhance user experience with visual and audio elements.</p>
+        </section>
+    </div>
+</body>
+</html>
