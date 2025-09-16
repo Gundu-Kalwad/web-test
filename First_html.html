@@ -1,235 +1,442 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Basics: Questions and Answers</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        h2 {
-            color: #34495e;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 5px;
-        }
-        h3 {
-            color: #2980b9;
-        }
-        code {
-            background-color: #ecf0f1;
-            padding: 2px 4px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-        pre {
-            background-color: #ecf0f1;
-            padding: 10px;
-            border-radius: 4px;
-            overflow-x: auto;
-        }
-        ul, ol {
-            margin-left: 20px;
-        }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #3498db;
-            color: white;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>HTML Answers (Q1 - Q9) — 10 Marks Each</title>
+  <style>
+    :root{
+      --bg:#fbfbfe;
+      --card:#ffffff;
+      --accent:#0b63d3;
+      --muted:#555;
+      --mono: "Courier New", monospace;
+    }
+    body{
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      margin: 24px;
+      background: linear-gradient(180deg,#f5f7fb, #ffffff 60%);
+      color:#222;
+      line-height:1.6;
+    }
+    header{
+      text-align:center;
+      margin-bottom:18px;
+    }
+    header h1{ margin:0; font-size:1.8rem; color:var(--accent); }
+    header p{ margin:6px 0 0; color:var(--muted); }
+
+    .container{
+      max-width:900px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    section.card{
+      background:var(--card);
+      border-radius:10px;
+      box-shadow: 0 6px 18px rgba(15,30,60,0.06);
+      padding:18px;
+      margin-bottom:18px;
+      border-left:4px solid rgba(11,99,211,0.12);
+    }
+    section.card h2{
+      margin:0 0 8px;
+      color:var(--accent);
+      font-size:1.2rem;
+    }
+    .meta { color:var(--muted); font-size:0.92rem; margin-bottom:12px; }
+
+    .subhead{ font-weight:700; margin-top:10px; }
+    ul.inline-list{ padding-left:1.1rem; margin:6px 0; }
+    .example{
+      margin:10px 0;
+      padding:10px;
+      background:#f7f9ff;
+      border-radius:6px;
+      border:1px dashed rgba(11,99,211,0.06);
+    }
+    pre{
+      background:#0b1220;
+      color:#e6eefc;
+      padding:12px;
+      overflow:auto;
+      border-radius:6px;
+      font-family: var(--mono);
+      font-size:0.9rem;
+      margin:8px 0;
+    }
+    code.inline{ background:#f1f1f1; padding:2px 6px; border-radius:4px; font-family:var(--mono); }
+    table.example-table{
+      width:100%;
+      border-collapse:collapse;
+      margin:10px 0;
+    }
+    table.example-table th, table.example-table td{
+      border:1px solid #ddd;
+      padding:8px;
+      text-align:left;
+    }
+    .conclusion{ background:#fffef6; padding:8px; border-radius:6px; border:1px solid rgba(200,160,20,0.08); margin-top:10px; }
+    footer{ text-align:center; color:var(--muted); margin-top:12px; font-size:0.9rem;}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>HTML Basics: Questions and Answers</h1>
+  <div class="container">
+    <header>
+      <h1>HTML — Detailed Answers (Q1 to Q9)</h1>
+      <p>Each answer is expanded to 10-mark exam style: definition, detailed explanation, examples and a conclusion.</p>
+    </header>
 
-        <section>
-            <h2>1. What is HTML? Explain features of HTML.</h2>
-            <p>HTML (HyperText Markup Language) is the standard markup language used to create webpages. It describes the structure of a webpage using a set of elements and tags. Web browsers read HTML documents and display them as webpages.</p>
-            <p><strong>Features of HTML:</strong></p>
-            <ol>
-                <li>Simple and Easy – HTML is easy to learn and implement.</li>
-                <li>Platform Independent – Works on any operating system and browser.</li>
-                <li>Hyperlink Support – Allows linking between pages using &lt;a&gt; tag.</li>
-                <li>Multimedia Support – Can embed images, audio, video, and animations.</li>
-                <li>Structured Content – Provides headings, lists, tables, forms, etc.</li>
-                <li>Supported Everywhere – All modern browsers support HTML.</li>
-            </ol>
-        </section>
+    <!-- Q1 -->
+    <section class="card" id="q1">
+      <h2>Q1. What is HTML? Explain features of HTML.</h2>
+      <p class="meta">Answer — definition, features and explanation.</p>
 
-        <section>
-            <h2>2. What is HTML document?</h2>
-            <p>An HTML document is a file with .html or .htm extension that contains HTML code. It is the main unit of a webpage, read and interpreted by a web browser.</p>
-            <p><strong>Main parts of an HTML document:</strong></p>
-            <ol>
-                <li>DOCTYPE Declaration → Defines document type (&lt;!DOCTYPE html&gt;).</li>
-                <li>Root Element &lt;html&gt; → Contains all other elements.</li>
-                <li>Head Section &lt;head&gt; → Metadata, title, CSS, JavaScript.</li>
-                <li>Body Section &lt;body&gt; → Visible content such as text, images, links.</li>
-            </ol>
-            <p>So, an HTML document is the backbone of a webpage that organizes and displays information.</p>
-        </section>
+      <div class="subhead">Definition</div>
+      <p>
+        <strong>HTML</strong> stands for <em>HyperText Markup Language</em>. It is the standard markup language used to create and structure content displayed in web browsers. HTML uses tags (elements) to tell the browser how to present texts, images, links and other content.
+      </p>
 
-        <section>
-            <h2>3. Explain the basic structure of an HTML document.</h2>
-            <pre><code>&lt;!DOCTYPE html&gt;
-&lt;html&gt;
+      <div class="subhead">Detailed Explanation</div>
+      <p>
+        HTML is not a programming language; it is a markup language. An HTML file contains elements such as headings, paragraphs, lists, tables, forms and media. Browsers parse the HTML and render the page visually. HTML works together with CSS (for styling) and JavaScript (for interactivity).
+      </p>
+
+      <div class="subhead">Features of HTML</div>
+      <ul class="inline-list">
+        <li><strong>Simple and Easy:</strong> Easy to learn and write even for beginners.</li>
+        <li><strong>Platform Independent:</strong> Runs on any OS and browser.</li>
+        <li><strong>Hyperlinking:</strong> Supports linking between pages using the <code class="inline">&lt;a&gt;</code> tag.</li>
+        <li><strong>Multimedia Support:</strong> Can embed images, audio and video (<code class="inline">&lt;img&gt;</code>, <code class="inline">&lt;audio&gt;</code>, <code class="inline">&lt;video&gt;</code>).</li>
+        <li><strong>Structured Documents:</strong> Headings, paragraphs, lists and tables allow clear structure.</li>
+        <li><strong>Extensible & Evolving:</strong> HTML5 added semantic elements, canvas, local storage and more.</li>
+        <li><strong>Integrates with CSS/JS:</strong> Separate presentation and behavior make development flexible.</li>
+      </ul>
+
+      <div class="subhead">Conclusion</div>
+      <p class="conclusion">
+        HTML forms the backbone of the web. Its features make it suitable for building both simple static pages and complex modern web applications when combined with CSS and JavaScript.
+      </p>
+    </section>
+
+    <!-- Q2 -->
+    <section class="card" id="q2">
+      <h2>Q2. What is an HTML Document?</h2>
+      <p class="meta">Answer — structure and characteristics of an HTML document.</p>
+
+      <div class="subhead">Definition</div>
+      <p>An <strong>HTML document</strong> is a text file with a <code class="inline">.html</code> or <code class="inline">.htm</code> extension that contains HTML markup. Browsers read and render it as a webpage.</p>
+
+      <div class="subhead">Key Characteristics</div>
+      <ul class="inline-list">
+        <li>Starts with the declaration <code class="inline">&lt;!DOCTYPE html&gt;</code> (HTML5).</li>
+        <li>Has a root element: <code class="inline">&lt;html&gt;&lt;/html&gt;</code>.</li>
+        <li>Two main parts: <code class="inline">&lt;head&gt;</code> (metadata) and <code class="inline">&lt;body&gt;</code> (visible content).</li>
+        <li>Contains a <code class="inline">&lt;title&gt;</code> shown in browser tab and other metadata such as <code class="inline">&lt;meta&gt;</code> tags.</li>
+      </ul>
+
+      <div class="subhead">Example: Basic HTML Document</div>
+      <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
   &lt;head&gt;
-    &lt;title&gt;My First Page&lt;/title&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;My First Webpage&lt;/title&gt;
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;h1&gt;Welcome&lt;/h1&gt;
-    &lt;p&gt;This is a sample webpage.&lt;/p&gt;
+    &lt;h1&gt;Welcome to HTML&lt;/h1&gt;
+    &lt;p&gt;This is a simple HTML document.&lt;/p&gt;
   &lt;/body&gt;
-&lt;/html&gt;</code></pre>
-            <p><strong>Explanation:</strong></p>
-            <ul>
-                <li>&lt;!DOCTYPE html&gt; – Defines HTML version.</li>
-                <li>&lt;html&gt; – Root of the page.</li>
-                <li>&lt;head&gt; – Contains title, metadata, links to CSS/JS.</li>
-                <li>&lt;title&gt; – Name shown in browser tab.</li>
-                <li>&lt;body&gt; – Main content displayed to users.</li>
-            </ul>
-            <p>This structure is mandatory for every HTML document.</p>
-        </section>
+&lt;/html&gt;
+</code></pre>
 
-        <section>
-            <h2>4. Explain the following tags with an example.</h2>
-            <h3>a) Header tag &lt;h1&gt; to &lt;h6&gt;</h3>
-            <p>Used for headings. &lt;h1&gt; is the largest, &lt;h6&gt; is the smallest.</p>
-            <pre><code>&lt;h1&gt;Main Title&lt;/h1&gt;
-&lt;h3&gt;Sub Title&lt;/h3&gt;</code></pre>
+      <div class="subhead">Conclusion</div>
+      <p class="conclusion">An HTML document is the file the browser uses to build and display a webpage. Proper structure ensures correct rendering across browsers.</p>
+    </section>
 
-            <h3>b) Paragraph tag &lt;p&gt;</h3>
-            <p>Defines a block of text.</p>
-            <pre><code>&lt;p&gt;This is a paragraph.&lt;/p&gt;</code></pre>
+    <!-- Q3 -->
+    <section class="card" id="q3">
+      <h2>Q3. Explain the basic structure of HTML document.</h2>
+      <p class="meta">Answer — step-by-step explanation of the skeleton of an HTML page.</p>
 
-            <h3>c) Subscript &lt;sub&gt; and Superscript &lt;sup&gt;</h3>
-            <p>Used in scientific and mathematical expressions.</p>
-            <pre><code>H&lt;sub&gt;2&lt;/sub&gt;O → Water formula
-x&lt;sup&gt;2&lt;/sup&gt; + y&lt;sup&gt;2&lt;/sup&gt; → Equation</code></pre>
-        </section>
+      <div class="subhead">Basic Structure Elements</div>
+      <ol>
+        <li><code class="inline">&lt;!DOCTYPE html&gt;</code> — Declares HTML5 and helps browsers render correctly.</li>
+        <li><code class="inline">&lt;html&gt;</code> — The root element (contains head and body).</li>
+        <li><code class="inline">&lt;head&gt;</code> — Contains metadata: <code class="inline">&lt;title&gt;</code>, <code class="inline">&lt;meta&gt;</code>, styles and links.</li>
+        <li><code class="inline">&lt;body&gt;</code> — Contains all visible content (headings, paragraphs, images, etc.).</li>
+      </ol>
 
-        <section>
-            <h2>5. Explain an HTML element where we demonstrate working with text tags.</h2>
-            <p>HTML provides formatting tags to style text. For example:</p>
-            <pre><code>&lt;p&gt;&lt;b&gt;Bold&lt;/b&gt;, &lt;i&gt;Italic&lt;/i&gt;, &lt;u&gt;Underline&lt;/u&gt;, &lt;mark&gt;Highlighted&lt;/mark&gt;&lt;/p&gt;</code></pre>
-            <p><strong>Explanation:</strong></p>
-            <ul>
-                <li>&lt;b&gt; → Bold text.</li>
-                <li>&lt;i&gt; → Italic text.</li>
-                <li>&lt;u&gt; → Underlined text.</li>
-                <li>&lt;mark&gt; → Highlights text.</li>
-            </ul>
-            <p>Thus, text tags allow emphasis and formatting to improve readability of web content.</p>
-        </section>
+      <div class="subhead">Example & Explanation</div>
+      <pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;title&gt;Example Page&lt;/title&gt;
+    &lt;meta name="description" content="Short description"&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Main Heading&lt;/h1&gt;
+    &lt;p&gt;Paragraph content here.&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
 
-        <section>
-            <h2>6. Explain table tag along with its specific property.</h2>
-            <p>Tables are created using &lt;table&gt; element in HTML.</p>
-            <pre><code>&lt;table border="1" cellpadding="5" cellspacing="2"&gt;
-  &lt;tr&gt;&lt;th&gt;Name&lt;/th&gt;&lt;th&gt;Age&lt;/th&gt;&lt;/tr&gt;
-  &lt;tr&gt;&lt;td&gt;John&lt;/td&gt;&lt;td&gt;20&lt;/td&gt;&lt;/tr&gt;
-  &lt;tr&gt;&lt;td&gt;Ana&lt;/td&gt;&lt;td&gt;22&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;</code></pre>
-            <p><strong>Properties/Attributes:</strong></p>
-            <ol>
-                <li>border – Defines table border.</li>
-                <li>cellpadding – Space inside a cell.</li>
-                <li>cellspacing – Space between cells.</li>
-                <li>align – Alignment of table.</li>
-                <li>width – Sets table width.</li>
-            </ol>
-        </section>
+      <div class="subhead">Why this structure matters</div>
+      <p>
+        Correct structure helps search engines, accessibility tools, and browsers understand and render your content. The <code class="inline">&lt;head&gt;</code> holds resources and metadata, while the <code class="inline">&lt;body&gt;</code> is what users see.
+      </p>
 
-        <section>
-            <h2>7. What is a list? Explain different types of lists.</h2>
-            <p>A list is a collection of related items presented in an organized way. HTML supports three types:</p>
-            <h3>1. Ordered List &lt;ol&gt; – Items are numbered.</h3>
-            <pre><code>&lt;ol&gt;&lt;li&gt;Apple&lt;/li&gt;&lt;li&gt;Banana&lt;/li&gt;&lt;/ol&gt;</code></pre>
+      <div class="subhead">Conclusion</div>
+      <p class="conclusion">Adhering to the basic structure ensures compatibility, correct rendering and better SEO/accessibility.</p>
+    </section>
 
-            <h3>2. Unordered List &lt;ul&gt; – Items are bulleted.</h3>
-            <pre><code>&lt;ul&gt;&lt;li&gt;Milk&lt;/li&gt;&lt;li&gt;Bread&lt;/li&gt;&lt;/ul&gt;</code></pre>
+    <!-- Q4 -->
+    <section class="card" id="q4">
+      <h2>Q4. Explain the following tags with an example: Header tag, Paragraph tag, Subscript & Superscript</h2>
+      <p class="meta">Answer — definitions, use-cases, examples and notes on semantics & accessibility.</p>
 
-            <h3>3. Definition List &lt;dl&gt; – Contains terms and definitions.</h3>
-            <pre><code>&lt;dl&gt;
-  &lt;dt&gt;HTML&lt;/dt&gt;&lt;dd&gt;Markup Language&lt;/dd&gt;
-  &lt;dt&gt;CSS&lt;/dt&gt;&lt;dd&gt;Styling Language&lt;/dd&gt;
-&lt;/dl&gt;</code></pre>
-        </section>
+      <div class="subhead">A. Header Tags (&lt;h1&gt; to &lt;h6&gt;)</div>
+      <p>
+        Header tags define headings and subheadings. Use them in hierarchical order (one <code class="inline">&lt;h1&gt;</code> per page for main title, then <code class="inline">&lt;h2&gt;</code>, <code class="inline">&lt;h3&gt;</code>, ...).
+        Search engines and screen readers use heading structure to understand page content.
+      </p>
 
-        <section>
-            <h2>8. Explain different form controls and elements with an example.</h2>
-            <p>Forms are used to collect user input. Common controls are:</p>
-            <ul>
-                <li>Textbox: &lt;input type="text"&gt;</li>
-                <li>Password field: &lt;input type="password"&gt;</li>
-                <li>Radio button: &lt;input type="radio" name="g"&gt; Male</li>
-                <li>Checkbox: &lt;input type="checkbox"&gt; Music</li>
-                <li>Textarea: &lt;textarea&gt;&lt;/textarea&gt;</li>
-                <li>Dropdown: &lt;select&gt;&lt;option&gt;Option1&lt;/option&gt;&lt;/select&gt;</li>
-                <li>Button: &lt;input type="submit" value="Submit"&gt;</li>
-            </ul>
-            <p><strong>Example:</strong></p>
-            <pre><code>&lt;form&gt;
-  Name: &lt;input type="text"&gt;&lt;br&gt;
-  Gender: &lt;input type="radio" name="g"&gt; Male
-          &lt;input type="radio" name="g"&gt; Female &lt;br&gt;
-  &lt;input type="submit" value="Submit"&gt;
-&lt;/form&gt;</code></pre>
-        </section>
+      <div class="example">
+        <strong>Rendered:</strong>
+        <h1>Example H1 — Main Title</h1>
+        <h2>H2 — Section</h2>
+        <h3>H3 — Subsection</h3>
+      </div>
 
-        <section>
-            <h2>9. Write a short note on:</h2>
-            <h3>a) Working with Hyperlinks</h3>
-            <p>Created using &lt;a&gt; tag with href attribute.</p>
-            <p>Used to link web pages, sections, or external sites.</p>
-            <pre><code>&lt;a href="https://example.com"&gt;Visit Example&lt;/a&gt;</code></pre>
-            <p>Can also link to email (mailto:) or file downloads.</p>
+      <div class="subhead">B. Paragraph Tag (&lt;p&gt;)</div>
+      <p>
+        The paragraph element is used for blocks of text. Browsers apply default margins which separate content and improve readability.
+      </p>
 
-            <h3>b) Frames</h3>
-            <p>Used to divide the browser window into multiple sections, each showing a different document.</p>
-            <pre><code>&lt;frameset cols="50%,50%"&gt;
-  &lt;frame src="left.html"&gt;
-  &lt;frame src="right.html"&gt;
-&lt;/frameset&gt;</code></pre>
-            <p>Now replaced by CSS and &lt;iframe&gt; for better practice.</p>
+      <div class="example">
+        <strong>Rendered paragraph:</strong>
+        <p>This is a simple paragraph displayed using the <code class="inline">&lt;p&gt;</code> tag.</p>
+      </div>
 
-            <h3>c) Images and Multimedia</h3>
-            <p>Image: &lt;img src="pic.jpg" alt="Description" width="200"&gt;</p>
-            <p>Audio:</p>
-            <pre><code>&lt;audio controls&gt;
-  &lt;source src="song.mp3" type="audio/mpeg"&gt;
-&lt;/audio&gt;</code></pre>
-            <p>Video:</p>
-            <pre><code>&lt;video controls width="300"&gt;
-  &lt;source src="movie.mp4" type="video/mp4"&gt;
-&lt;/video&gt;</code></pre>
-            <p>These tags enhance user experience with visual and audio elements.</p>
-        </section>
-    </div>
-</body>
-</html>
+      <div class="subhead">C. Subscript (&lt;sub&gt;) and Superscript (&lt;sup&gt;)</div>
+      <p>
+        Use <code class="inline">&lt;sub&gt;</code> to show text slightly below baseline (commonly used in chemical formulas). Use <code class="inline">&lt;sup&gt;</code> to show text above baseline (exponents, ordinal indicators).
+      </p>
+
+      <div class="example">
+        <strong>Rendered examples:</strong>
+        <p>Chemical formula: H<sub>2</sub>O — the 2 appears below the line.</p>
+        <p>Mathematics: X<sup>2</sup> + Y<sup>2</sup> — exponents appear above the line.</p>
+      </div>
+
+      <div class="subhead">Best Practices</div>
+      <ul class="inline-list">
+        <li>Follow heading hierarchy for accessibility.</li>
+        <li>Use semantic tags (<code class="inline">&lt;strong&gt;</code> / <code class="inline">&lt;em&gt;</code>) instead of purely presentational tags when possible.</li>
+        <li>Use sub/sup only for semantic requirements (not to fudge spacing or font sizes).</li>
+      </ul>
+
+      <div class="subhead">Conclusion</div>
+      <p class="conclusion">Header tags give structure and SEO value; paragraphs organize text; sub/sup are required for scientific and mathematical correctness and accessibility.</p>
+    </section>
+
+    <!-- Q5 -->
+    <section class="card" id="q5">
+      <h2>Q5. Explain an HTML element where we demonstrate working with text tags.</h2>
+      <p class="meta">Answer — full description of text formatting tags with examples and semantic differences.</p>
+
+      <div class="subhead">Definition & Purpose</div>
+      <p>
+        HTML text formatting elements change the appearance or emphasize text. They fall into two categories:
+      </p>
+      <ul class="inline-list">
+        <li><strong>Presentational (physical):</strong> <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, <code>&lt;u&gt;</code> — focus on how text looks.</li>
+        <li><strong>Semantic (logical):</strong> <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;mark&gt;</code> — convey meaning; better for accessibility and SEO.</li>
+      </ul>
+
+      <div class="subhead">Detailed Examples</div>
+
+      <div class="example">
+        <strong>Rendered demonstration:</strong>
+        <p><b>Bold using &lt;b&gt;</b> (visual)</p>
+        <p><strong>Strong using &lt;strong&gt;</strong> (semantic + visual)</p>
+        <p><i>Italic using &lt;i&gt;</i> (visual)</p>
+        <p><em>Emphasized using &lt;em&gt;</em> (semantic)</p>
+        <p><u>Underlined using &lt;u&gt;</u></p>
+        <p><mark>Highlighted using &lt;mark&gt;</mark></p>
+        <p><small>Small text using &lt;small&gt;</small></p>
+      </div>
+
+      <pre><code>&lt;p&gt;&lt;strong&gt;Important:&lt;/strong&gt; Please read the instructions carefully.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note:&lt;/em&gt; This field is required.&lt;/p&gt;
+&lt;p&gt;&lt;mark&gt;Reminder:&lt;/mark&gt; Submit before the deadline.&lt;/p&gt;
+</code></pre>
+
+      <div class="subhead">When to use semantic vs presentational tags</div>
+      <p>
+        Prefer semantic tags when the text meaning matters (screen readers, search engines). Use presentational tags only when you explicitly need a visual effect and there's no semantic meaning.
+      </p>
+
+      <div class="subhead">Conclusion</div>
+      <p class="conclusion">Text formatting improves readability and conveys meaning; semantic tags support accessibility and search engines while presentational tags control appearance.</p>
+    </section>
+
+    <!-- Q6 -->
+    <section class="card" id="q6">
+      <h2>Q6. Explain &lt;table&gt; tag along with its specific properties.</h2>
+      <p class="meta">Answer — structure, attributes, examples showing rowspan/colspan, and best practices.</p>
+
+      <div class="subhead">Definition</div>
+      <p>The <code class="inline">&lt;table&gt;</code> element displays tabular data with rows and columns. It is composed of rows (<code class="inline">&lt;tr&gt;</code>), header cells (<code class="inline">&lt;th&gt;</code>) and data cells (<code class="inline">&lt;td&gt;</code>).</p>
+
+      <div class="subhead">Common Attributes</div>
+      <ul class="inline-list">
+        <li><code class="inline">border</code> — legacy attribute to set border width (use CSS border instead in modern pages).</li>
+        <li><code class="inline">cellpadding</code> — internal cell padding (use CSS padding nowadays).</li>
+        <li><code class="inline">cellspacing</code> — gap between cells (use CSS border-spacing).</li>
+        <li><code class="inline">rowspan</code> &amp; <code class="inline">colspan</code> — merge cells vertically or horizontally.</li>
+      </ul>
+
+      <div class="subhead">Example (with rowspan and colspan)</div>
+      <div class="example">
+        <strong>Rendered table example:</strong>
+        <table class="example-table" aria-label="Sample table">
+          <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Course</th>
+          </tr>
+          <tr>
+            <td>Rahul</td>
+            <td>20</td>
+            <td rowspan="2">B.Sc</td>
+          </tr>
+          <tr>
+            <td>Priya</td>
+            <td>21</td>
+          </tr>
+          <tr>
+            <td colspan="3">End of Table</td>
+          </tr>
+        </table>
+      </div>
+
+      <pre><code>&lt;table border="1" cellpadding="5" cellspacing="3"&gt;
+  &lt;tr&gt;
+    &lt;th&gt;Name&lt;/th&gt;
+    &lt;th&gt;Age&lt;/th&gt;
+    &lt;th&gt;Course&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Rahul&lt;/td&gt;
+    &lt;td&gt;20&lt;/td&gt;
+    &lt;td rowspan="2"&gt;B.Sc&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Priya&lt;/td&gt;
+    &lt;td&gt;21&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td colspan="3"&gt;End of Table&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+</code></pre>
+
+      <div class="subhead">Best Practices</div>
+      <ul class="inline-list">
+        <li>Use CSS for styling (borders, spacing, widths) instead of deprecated attributes.</li>
+        <li>Use <code>&lt;caption&gt;</code> for table titles and <code>&lt;thead&gt;</code>, <code>&lt;tbody&gt;</code>, <code>&lt;tfoot&gt;</code> for semantics.</li>
+        <li>Provide <code>scope</code> attributes on <code>&lt;th&gt;</code> for accessibility when appropriate.</li>
+      </ul>
+
+      <div class="subhead">Conclusion</div>
+      <p class="conclusion">Tables are ideal for tabular data. Use semantic markup and CSS for styling and ensure the table is accessible to screen reader users.</p>
+    </section>
+
+    <!-- Q7 -->
+    <section class="card" id="q7">
+      <h2>Q7. What is a list? Explain different types of lists.</h2>
+      <p class="meta">Answer — ordered, unordered and definition lists with examples and use-cases.</p>
+
+      <div class="subhead">Definition</div>
+      <p>A <strong>list</strong> groups related items. HTML provides three types of lists to show ordered, unordered or term-definition data.</p>
+
+      <div class="subhead">Types of Lists</div>
+      <h4>1. Ordered List (&lt;ol&gt;)</h4>
+      <p>Displays items with numbers or letters. Use when sequence matters (e.g., steps).</p>
+      <pre><code>&lt;ol&gt;
+  &lt;li&gt;Step 1: Open the browser&lt;/li&gt;
+  &lt;li&gt;Step 2: Type the URL&lt;/li&gt;
+  &lt;li&gt;Step 3: Press Enter&lt;/li&gt;
+&lt;/ol&gt;
+</code></pre>
+
+      <h4>2. Unordered List (&lt;ul&gt;)</h4>
+      <p>Displays items with bullets. Use when order is not important (e.g., shopping lists).</p>
+      <pre><code>&lt;ul&gt;
+  &lt;li&gt;Milk&lt;/li&gt;
+  &lt;li&gt;Bread&lt;/li&gt;
+  &lt;li&gt;Butter&lt;/li&gt;
+&lt;/ul&gt;
+</code></pre>
+
+      <h4>3. Definition List (&lt;dl&gt;)</h4>
+      <p>Used for pairs of terms and descriptions (glossary entries).</p>
+      <pre><code>&lt;dl&gt;
+  &lt;dt&gt;HTML&lt;/dt&gt;
+  &lt;dd&gt;HyperText Markup Language&lt;/dd&gt;
+  &lt;dt&gt;CSS&lt;/dt&gt;
+  &lt;dd&gt;Cascading Style Sheets&lt;/dd&gt;
+&lt;/dl&gt;
+</code></pre>
+
+      <div class="subhead">Conclusion</div>
+      <p class="conclusion">Use ordered lists for sequences, unordered lists for grouped items, and definition lists for term–definition relationships. Lists improve readability and content organization.</p>
+    </section>
+
+    <!-- Q8 -->
+    <section class="card" id="q8">
+      <h2>Q8. Explain different form controls and elements with an example.</h2>
+      <p class="meta">Answer — common form controls, how they behave, and a complete sample form.</p>
+
+      <div class="subhead">Definition</div>
+      <p>HTML forms collect user input. The form is the container: <code class="inline">&lt;form&gt; ... &lt;/form&gt;</code>. Inside it you place input controls such as text fields, radio buttons, checkboxes, selects and buttons.</p>
+
+      <div class="subhead">Common Form Controls and their Roles</div>
+      <ul class="inline-list">
+        <li><code>&lt;input type="text"&gt;</code> — single-line text box.</li>
+        <li><code>&lt;input type="password"&gt;</code> — hides typed characters for passwords.</li>
+        <li><code>&lt;input type="radio"&gt;</code> — choose one option in a group.</li>
+        <li><code>&lt;input type="checkbox"&gt;</code> — choose multiple options.</li>
+        <li><code>&lt;select&gt;&lt;option&gt;</code> — dropdown selection.</li>
+        <li><code>&lt;textarea&gt;</code> — multi-line text input.</li>
+        <li><code>&lt;button type="submit"&gt;</code> / <code>&lt;input type="submit"&gt;</code> — submit the form.</li>
+      </ul>
+
+      <div class="subhead">Complete Example Form</div>
+      <div class="example">
+        <strong>Rendered form (try in a browser):</strong>
+        <form action="#" method="get" style="margin-top:8px; padding:10px; border-radius:6px; background:#fff;">
+          <label>Name: <input type="text" name="username" required></label><br><br>
+          <label>Password: <input type="password" name="password" required></label><br><br>
+
+          Gender:
+          <label><input type="radio" name="gender" value="M" checked> Male</label>
+          <label><input type="radio" name="gender" value="F"> Female</label><br><br>
+
+          Hobbies:
+          <label><input type="checkbox" name="hobby" value="sports"> Sports</label>
+          <label><input type="checkbox" name="hobby" value="music"> Music</label><br><br>
+
+          Country:
+          <select name="country">
+            <option>India</option>
+            <option>USA</option>
+            <option>UK</option>
+          </select><br><br>
+
+          <input type="submit" value="Submit">
+          <input type="reset" value="Reset">
+        </form>
+      </div>
+      
