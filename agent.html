@@ -2,157 +2,117 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Puter.js ChatGPT-4o Mobile</title>
+  <title>Coding Agent</title>
   <style>
     body {
-      font-family: sans-serif;
-      margin: 0;
-      padding: 1rem;
-      background: #0b0f14;
-      color: #e6edf3;
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      display: flex; flex-direction: column;
+      height: 100vh;
     }
-    h1 { font-size: 1.5rem; margin-bottom: 1rem; text-align: center; }
-    .container { max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: .75rem; }
-    input {
-      width: 100%;
-      padding: .75rem;
-      border-radius: 8px;
-      border: 1px solid #223043;
-      font-size: 1rem;
+    #chat {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background: #f9f9f9;
+    }
+    .msg { margin: 6px 0; }
+    .user { color: #2a7; font-weight: bold; }
+    .ai { color: #06c; font-weight: bold; }
+    #input-area {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+      background: #fff;
+    }
+    #user-input {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
     button {
-      padding: .75rem;
-      font-size: 1rem;
-      border-radius: 8px;
+      margin-left: 8px;
+      padding: 8px 16px;
       border: none;
-      background: #182232;
-      color: #e6edf3;
+      border-radius: 4px;
+      background: #06c;
+      color: #fff;
       cursor: pointer;
-    }
-    button:hover { background: #1d2a3e; }
-    pre {
-      background: #0a111b;
-      padding: 1rem;
-      border-radius: 8px;
-      max-height: 300px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      border: 1px solid #1e2a3a;
     }
   </style>
 </head>
 <body>
-  <h1>Chat with GPT-4o (Puter.js)</h1>
-  <div class="container">
-    <input id="prompt" type="text" placeholder="Ask something..." autofocus>
-    <button id="send">Send</button>
-    <pre id="output"></pre>
+  <div id="chat"></div>
+
+  <div id="input-area">
+    <input id="user-input" type="text" placeholder="Type a command..." />
+    <button id="send-btn">Send</button>
   </div>
 
-  <!-- Puter.js library -->
-  <script src="https://js.puter.com/v2/"></script>
+  <script type="module">
+    import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
-  <script>
-    // --- Common helpers ---
-    const normalize = (res) => {
-      if (typeof res === 'string') return res;
+    // ⚠️ Replace with your API key
+    const ai = new GoogleGenerativeAI("YOUR_API_KEY");
+    const model = ai.getGenerativeModel({ model: "gemini-2.0-flash-001" });
+
+    const chatBox = document.getElementById("chat");
+    const input = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-btn");
+
+    function addMessage(sender, text) {
+      const div = document.createElement("div");
+      div.classList.add("msg", sender);
+      div.innerHTML = `<span class="${sender}">${sender === "user" ? "You" : "Agent"}:</span> ${text}`;
+      chatBox.appendChild(div);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function handleUserPrompt(prompt) {
+      addMessage("user", prompt);
+
       try {
-        if (res?.message?.content) return res.message.content;
-        if (Array.isArray(res?.choices) && res.choices[0]?.message?.content) return res.choices[0].message.content;
-        if (typeof res?.content === 'string') return res.content;
-      } catch (_) {}
-      return JSON.stringify(res);
-    };
+        // Ask Gemini
+        const result = await model.generateContent(prompt);
+        const reply = result.response.text();
+        addMessage("ai", reply);
 
-    const waitReady = async (ms = 10000) => {
-      const start = Date.now();
-      while (Date.now() - start < ms) {
-        if (typeof puter !== 'undefined' && puter?.ai?.chat) return true;
-        await new Promise(r => setTimeout(r, 100));
+        // Save generated code into project
+        const projectDir = await rpc("host.fs.openDocumentTree"); // user picks project root
+        const file = await rpc("host.fs.createFile", {
+          directoryUri: projectDir.uri,
+          fileName: `Generated_${Date.now()}.py`,
+          mimeType: "text/x-python"
+        });
+
+        await rpc("host.fs.writeFileText", { uri: file.uri, content: reply });
+        await rpc("host.editor.openDocument", { uri: file.uri });
+        await rpc("host.device.showToast", { message: "✅ File created with AI code" });
+
+      } catch (err) {
+        addMessage("ai", "❌ Error: " + err.message);
+        await rpc("host.device.showToast", { message: "AI error: " + err.message });
       }
-      return false;
-    };
+    }
 
-    // --- HTTP GET API mode: ?api=1&prompt=... ---
-    (async function maybeApiMode() {
-      try {
-        const params = new URLSearchParams(location.search);
-        if (!params.has('api')) return; // normal UI mode
-        const prompt = params.get('prompt') || '';
-        const ready = await waitReady();
-        let answer = '';
-        if (ready && prompt) {
-          try {
-            const res = await puter.ai.chat(prompt, { model: 'gpt-4o' });
-            answer = normalize(res);
-          } catch (e) {
-            answer = 'Chat failed: ' + String(e?.message || e);
-          }
-        } else if (!ready) {
-          answer = 'Puter SDK not ready';
-        }
-        const body = { ok: true, prompt, answer };
-        document.open();
-        document.write(JSON.stringify(body));
-        document.close();
-      } catch (_) {
-        // ignore
-      }
-    })();
-
-    // --- Window API and postMessage API ---
-    window.chatApi = {
-      ask: async (prompt) => {
-        const ready = await waitReady();
-        if (!ready) return 'Puter SDK not ready';
-        const res = await puter.ai.chat(String(prompt || ''), { model: 'gpt-4o' });
-        return normalize(res);
-      }
-    };
-
-    window.addEventListener('message', async (ev) => {
-      const data = ev?.data || {};
-      if (data && data.type === 'ask') {
-        const text = await window.chatApi.ask(data.prompt);
-        try { ev.source && ev.source.postMessage({ type: 'answer', text }, '*'); } catch (_) {}
+    // --- Wire up UI ---
+    sendBtn.addEventListener("click", () => {
+      const text = input.value.trim();
+      if (text) {
+        handleUserPrompt(text);
+        input.value = "";
       }
     });
 
-    document.addEventListener("DOMContentLoaded", () => {
-      const output = document.getElementById('output');
-      const promptInput = document.getElementById('prompt');
-      const sendBtn = document.getElementById('send');
-
-      const log = msg => {
-        output.textContent += msg + "\n";
-        output.scrollTop = output.scrollHeight;
-      };
-
-      const send = async () => {
-        const msg = promptInput.value.trim();
-        if (!msg) return;
-        log(`You: ${msg}`);
-        promptInput.value = '';
-
-        try {
-          // Call GPT-4o using puter.ai.chat
-          const res = await puter.ai.chat(msg, { model: "gpt-4o" });
-          const reply = normalize(res);
-          log(`GPT: ${reply}`);
-        } catch (err) {
-          log(`Error: ${String(err && err.message ? err.message : err)}`);
-        }
-      };
-
-      sendBtn.addEventListener('click', send);
-
-      // Optional: allow Enter key to send
-      promptInput.addEventListener('keypress', e => {
-        if (e.key === 'Enter') send();
-      });
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        sendBtn.click();
+      }
     });
+
+    // Expose for native app too (optional)
+    window.agent = { handleUserPrompt };
   </script>
 </body>
 </html>
