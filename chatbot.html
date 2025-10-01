@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <title>Pro Coding Studio Host RPC Tester</title>
+    <title>Pro Coding Studio • Host RPC Tester</title>
     <style>
       :root { color-scheme: dark; }
       * { box-sizing: border-box; }
@@ -28,6 +28,7 @@
       section { border: 1px solid #2a2f3a; border-radius: 10px; background: #0e1116; }
       section > h2 {
         font-size: 14px; margin: 0; padding: 10px 12px; background: #11151c; border-bottom: 1px solid #2a2f3a;
+        display: flex; align-items: center; justify-content: space-between; gap: 12px;
       }
       .content { padding: 12px; display: grid; gap: 10px; }
       .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
@@ -45,7 +46,7 @@
       @media (max-width: 920px) { .grid-2 { grid-template-columns: 1fr; } }
       .log {
         font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        background: #0b0e13; border: 1px solid #2a2f3a; border-radius: 10px; padding: 12px; min-height: 160px; white-space: pre-wrap;
+        background: #0b0e13; border: 1px solid #2a2f3a; border-radius: 10px; padding: 12px; min-height: 180px; white-space: pre-wrap;
       }
       .warn { color: #ffd166; }
       .ok { color: #64ffda; }
@@ -53,6 +54,7 @@
       .pill {
         display: inline-block; padding: 3px 8px; border-radius: 999px; font-size: 11px; border: 1px solid #3a4150; background: #1b1f27; color: #9aa4b2;
       }
+      .actions-right { display: flex; gap: 8px; align-items: center; }
     </style>
   </head>
   <body>
@@ -63,10 +65,16 @@
 
     <main>
       <section>
-        <h2>Bridge status</h2>
+        <h2>
+          Bridge & Controls
+          <span class="actions-right">
+            <button id="btnRunAll">Run All</button>
+            <button id="btnCopyLog" title="Copy entire log">Copy Log</button>
+          </span>
+        </h2>
         <div class="content">
           <div id="bridgeStatus" class="row">
-            <span class="pill">ProCodingHost: <span id="bridgeState">checking…</span></span>
+            <span class="pill">ProCodingHost: <span id="bridgeState">connected</span></span>
             <button id="btnPing">Ping Host</button>
           </div>
         </div>
@@ -81,9 +89,9 @@
           </div>
           <div class="grid-2">
             <div>
-              <label class="muted">Execute Command</label>
+              <label class="muted">Execute Command (optional)</label>
               <div class="row">
-                <input id="cmdId" type="text" placeholder="command id, e.g. some.extension:doThing" />
+                <input id="cmdId" type="text" placeholder="command id, e.g. sample_agent:open" />
                 <input id="cmdArgs" type="text" placeholder='args JSON, e.g. {"foo":123}' />
                 <button id="btnExec">host.executeCommand</button>
               </div>
@@ -104,7 +112,7 @@
             <div>
               <label class="muted">Document Uri</label>
               <div class="row">
-                <input id="docUri" type="text" placeholder="content://… (auto-filled by openDocument)" />
+                <input id="docUri" type="text" placeholder="content://… (auto-filled by openDocument or createFile)" />
                 <button id="btnReadDoc">fs.readFileText</button>
                 <button id="btnWriteDoc">fs.writeFileText</button>
                 <button id="btnGetInfo">fs.getFileInfo</button>
@@ -129,7 +137,7 @@
                 <button id="btnCreateDir">fs.createDirectory</button>
               </div>
               <div class="row">
-                <input id="zipPath" type="text" placeholder="zipPath (device local path)" />
+                <input id="zipPath" type="text" placeholder="zipPath (device local path, optional)" />
                 <button id="btnExtractZip">fs.extractZip → directoryUri</button>
               </div>
             </div>
@@ -149,7 +157,7 @@
             <div>
               <label class="muted">Open file in editor by Uri</label>
               <div class="row">
-                <input id="openUri" type="text" placeholder="content://… (paste from fs.openDocument)" />
+                <input id="openUri" type="text" placeholder="content://… (paste from fs.openDocument or created file)" />
                 <button id="btnEditorOpen">editor.openDocument</button>
               </div>
             </div>
@@ -176,7 +184,13 @@
       </section>
 
       <section>
-        <h2>Log</h2>
+        <h2>
+          Log
+          <span class="actions-right">
+            <button id="btnCopyLog2" title="Copy entire log">Copy Log</button>
+            <button id="btnClearLog" title="Clear log">Clear</button>
+          </span>
+        </h2>
         <div class="content">
           <div class="log" id="log"></div>
         </div>
@@ -191,8 +205,13 @@
         const els = {
           state: document.getElementById('bridgeState'),
           log: document.getElementById('log'),
-          // basics
+          // controls
+          btnRunAll: document.getElementById('btnRunAll'),
+          btnCopyLog: document.getElementById('btnCopyLog'),
+          btnCopyLog2: document.getElementById('btnCopyLog2'),
+          btnClearLog: document.getElementById('btnClearLog'),
           btnPing: document.getElementById('btnPing'),
+          // basics
           btnToast: document.getElementById('btnToast'),
           btnDevice: document.getElementById('btnDevice'),
           cmdId: document.getElementById('cmdId'),
@@ -234,19 +253,31 @@
           els.log.innerHTML += `<div class="${cls || ''}">${escapeHtml(t)}</div>`;
           els.log.scrollTop = els.log.scrollHeight;
         }
-
         function safeStringify(v) {
           try { return JSON.stringify(v, null, 2); } catch { return String(v); }
         }
         function escapeHtml(s) {
-          return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+          return String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+        }
+        async function copyLog() {
+          const text = els.log.innerText;
+          try {
+            await navigator.clipboard.writeText(text);
+            logLine('Log copied to clipboard', 'ok');
+          } catch {
+            // Fallback
+            const ta = document.createElement('textarea');
+            ta.value = text; document.body.appendChild(ta); ta.select();
+            document.execCommand('copy'); document.body.removeChild(ta);
+            logLine('Log copied (fallback)', 'ok');
+          }
         }
 
         function rpc(method, params = {}) {
           const id = String(_id++);
           const payload = { id, method, params };
           return new Promise((resolve, reject) => {
-            pending.set(id, { resolve, reject });
+            pending.set(id, { resolve, reject, method });
             try {
               if (window.ProCodingHost && typeof window.ProCodingHost.postMessage === 'function') {
                 window.ProCodingHost.postMessage(JSON.stringify(payload));
@@ -274,10 +305,10 @@
             pending.delete(id);
 
             if (data.rpc_result) {
-              logLine(`✓ ${id} ${safeStringify(bag.result)}`, 'ok');
+              logLine(`✓ ${p.method} ${safeStringify(bag.result)}`, 'ok');
               p.resolve(bag.result);
             } else {
-              logLine(`✗ ${id} ${bag.code || ''} ${bag.message || ''}`, 'err');
+              logLine(`✗ ${p.method} ${bag.code || ''} ${bag.message || ''}`, 'err');
               p.reject(new Error(bag.message || 'RPC error'));
             }
             return;
@@ -289,80 +320,55 @@
           }
         });
 
-        // Bridge presence
-        function refreshBridgeState() {
-          const ok = !!(window.ProCodingHost && typeof window.ProCodingHost.postMessage === 'function');
-          els.state.textContent = ok ? 'available' : 'not available';
-          els.state.className = ok ? 'ok' : 'warn';
-        }
-        refreshBridgeState();
-        setTimeout(refreshBridgeState, 500);
-
         // Wire basics
         els.btnPing.addEventListener('click', () => {
           try {
             window.ProCodingHost.postMessage(JSON.stringify({ type: 'panel:ping' }));
             logLine('→ panel:ping', 'muted');
-          } catch (e) {
-            logLine(`ping failed: ${e.message}`, 'err');
-          }
+          } catch (e) { logLine(`ping failed: ${e.message}`, 'err'); }
         });
+        els.btnCopyLog.addEventListener('click', copyLog);
+        els.btnCopyLog2.addEventListener('click', copyLog);
+        els.btnClearLog.addEventListener('click', () => { els.log.innerHTML = ''; });
 
         els.btnToast.addEventListener('click', async () => {
-          try { await rpc('host.toast', { message: 'Hello from remote panel 👋' }); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { await rpc('host.toast', { message: 'Hello from remote panel 👋' }); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnDevice.addEventListener('click', async () => {
-          try { const info = await rpc('host.device.info', {}); logLine(info, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const info = await rpc('host.device.info', {}); logLine(info, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnExec.addEventListener('click', async () => {
           const id = els.cmdId.value.trim();
           if (!id) return logLine('Provide a command id', 'warn');
           let args = undefined;
           const raw = els.cmdArgs.value.trim();
           if (raw) { try { args = JSON.parse(raw); } catch (e) { return logLine(`Invalid JSON args: ${e.message}`, 'err'); } }
-          try { const res = await rpc('host.executeCommand', { id, args }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.executeCommand', { id, args }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
 
-        // FS
+        // FS UI buttons
         els.btnOpenDoc.addEventListener('click', async () => {
           try {
             const info = await rpc('host.fs.openDocument', {});
             if (info && info.uri) els.docUri.value = info.uri;
-            logLine(info, 'ok');
           } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnOpenTree.addEventListener('click', async () => {
           try {
             const res = await rpc('host.fs.openDocumentTree', {});
             if (res && res.uri) els.dirUri.value = res.uri;
-            logLine(res, 'ok');
           } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnListFiles.addEventListener('click', async () => {
           const dir = els.dirUri.value.trim();
           if (!dir) return logLine('Provide directoryUri', 'warn');
-          try {
-            const files = await rpc('host.fs.listFiles', { directoryUri: dir });
-            logLine(files, 'ok');
-          } catch (e) { logLine(e.message, 'err'); }
+          try { const files = await rpc('host.fs.listFiles', { directoryUri: dir }); logLine(files, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnReadDoc.addEventListener('click', async () => {
           const uri = els.docUri.value.trim();
           if (!uri) return logLine('Provide document uri', 'warn');
-          try {
-            const res = await rpc('host.fs.readFileText', { uri });
-            logLine({ length: res?.content?.length ?? 0 }, 'ok');
-          } catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.fs.readFileText', { uri }); logLine({ length: res?.content?.length ?? 0 }, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnWriteDoc.addEventListener('click', async () => {
           const uri = els.docUri.value.trim();
           if (!uri) return logLine('Provide document uri', 'warn');
@@ -372,21 +378,16 @@
             logLine(res, 'ok');
           } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnGetInfo.addEventListener('click', async () => {
           const uri = els.docUri.value.trim();
           if (!uri) return logLine('Provide uri', 'warn');
-          try { const info = await rpc('host.fs.getFileInfo', { uri }); logLine(info, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const info = await rpc('host.fs.getFileInfo', { uri }); logLine(info, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnDelete.addEventListener('click', async () => {
           const uri = els.docUri.value.trim();
           if (!uri) return logLine('Provide uri', 'warn');
-          try { const res = await rpc('host.fs.deleteFile', { uri }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.fs.deleteFile', { uri }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnReadBytes.addEventListener('click', async () => {
           const uri = els.docUri.value.trim();
           if (!uri) return logLine('Provide uri', 'warn');
@@ -396,67 +397,50 @@
             logLine({ bytesB64Len: (res?.bytes || '').length }, 'ok');
           } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnWriteBytes.addEventListener('click', async () => {
           const uri = els.docUri.value.trim();
           const bytes = els.bytesB64.value.trim();
           if (!uri) return logLine('Provide uri', 'warn');
           if (!bytes) return logLine('Provide base64 bytes', 'warn');
-          try { const res = await rpc('host.fs.writeFileBytes', { uri, bytes }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.fs.writeFileBytes', { uri, bytes }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnCreateFile.addEventListener('click', async () => {
           const dir = els.dirUri.value.trim();
           const name = els.newName.value.trim();
           const mime = els.mimeType.value.trim() || 'text/plain';
           if (!dir || !name) return logLine('Provide directoryUri and fileName', 'warn');
-          try { const res = await rpc('host.fs.createFile', { directoryUri: dir, fileName: name, mimeType: mime }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.fs.createFile', { directoryUri: dir, fileName: name, mimeType: mime }); if (res?.uri) els.docUri.value = res.uri; logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnCreateDir.addEventListener('click', async () => {
           const dir = els.dirUri.value.trim();
           const name = els.newName.value.trim();
           if (!dir || !name) return logLine('Provide directoryUri and folderName', 'warn');
-          try { const res = await rpc('host.fs.createDirectory', { directoryUri: dir, folderName: name }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.fs.createDirectory', { directoryUri: dir, folderName: name }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnExtractZip.addEventListener('click', async () => {
           const zipPath = els.zipPath.value.trim();
           const target = els.dirUri.value.trim();
           if (!zipPath || !target) return logLine('Provide zipPath and targetDirectoryUri', 'warn');
-          try { const res = await rpc('host.fs.extractZip', { zipPath, targetDirectoryUri: target }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.fs.extractZip', { zipPath, targetDirectoryUri: target }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
 
-        // Editor
+        // Editor UI buttons
         els.btnEditorActive.addEventListener('click', async () => {
-          try { const info = await rpc('host.editor.getActiveDocument', {}); logLine(info, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const info = await rpc('host.editor.getActiveDocument', {}); logLine(info, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnEditorGet.addEventListener('click', async () => {
-          try { const res = await rpc('host.editor.getCurrentContent', {}); logLine({ length: res?.content?.length ?? 0 }, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.editor.getCurrentContent', {}); logLine({ length: res?.content?.length ?? 0 }, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnEditorSet.addEventListener('click', async () => {
-          try { const res = await rpc('host.editor.setContent', { content: els.editorContent.value }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.editor.setContent', { content: els.editorContent.value }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnEditorSave.addEventListener('click', async () => {
-          try { const res = await rpc('host.editor.saveActiveDocument', {}); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.editor.saveActiveDocument', {}); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
-
         els.btnEditorOpen.addEventListener('click', async () => {
           const uri = els.openUri.value.trim();
           if (!uri) return logLine('Provide content Uri', 'warn');
-          try { const res = await rpc('host.editor.openDocument', { uri }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('host.editor.openDocument', { uri }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
         });
 
         // Native bridge
@@ -466,8 +450,115 @@
           let params = {};
           const raw = els.nativeParams.value.trim();
           if (raw) { try { params = JSON.parse(raw); } catch (e) { return logLine(`Invalid params JSON: ${e.message}`, 'err'); } }
-          try { const res = await rpc('android.call', { method, params }); logLine(res, 'ok'); }
-          catch (e) { logLine(e.message, 'err'); }
+          try { const res = await rpc('android.call', { method, params }); logLine(res, 'ok'); } catch (e) { logLine(e.message, 'err'); }
+        });
+
+        // Helper: make a base64 from string
+        function toB64(s) {
+          try { return btoa(unescape(encodeURIComponent(s))); } catch { return btoa(s); }
+        }
+
+        // One-click end-to-end flow
+        els.btnRunAll.addEventListener('click', async () => {
+          els.btnRunAll.disabled = true;
+          logLine('=== Run All started ===', 'muted');
+          let testDir = els.dirUri.value.trim();
+          let createdDirUri = null;
+          let createdFileUri = els.docUri.value.trim();
+          const ts = new Date().toISOString().replace(/[:.]/g, '-');
+          const demoFolder = `agent_demo_${ts}`;
+          const demoFile = `hello_${ts}.txt`;
+
+          try {
+            await rpc('host.toast', { message: 'Starting Run All…' });
+          } catch (e) { logLine(e.message, 'err'); }
+
+            // Device info
+          try { await rpc('host.device.info', {}); } catch (e) { logLine(e.message, 'err'); }
+
+          // Ensure a base directory (may prompt user)
+          try {
+            if (!testDir) {
+              const res = await rpc('host.fs.openDocumentTree', {});
+              testDir = res?.uri || '';
+              if (!testDir) { logLine('Directory not selected. Aborting Run All.', 'err'); els.btnRunAll.disabled = false; return; }
+              els.dirUri.value = testDir;
+            }
+          } catch (e) { logLine(e.message, 'err'); els.btnRunAll.disabled = false; return; }
+
+          // Create a working subfolder
+          try {
+            const res = await rpc('host.fs.createDirectory', { directoryUri: testDir, folderName: demoFolder });
+            createdDirUri = res?.uri || null;
+            if (!createdDirUri) { logLine('Failed to create working directory', 'err'); }
+          } catch (e) { logLine(e.message, 'err'); }
+
+          // Create a text file
+          try {
+            const res = await rpc('host.fs.createFile', { directoryUri: createdDirUri || testDir, fileName: demoFile, mimeType: 'text/plain' });
+            createdFileUri = res?.uri || createdFileUri;
+            if (createdFileUri) els.docUri.value = createdFileUri;
+          } catch (e) { logLine(e.message, 'err'); }
+
+          // Write text content
+          try {
+            const res = await rpc('host.fs.writeFileText', { uri: createdFileUri, content: `// created by Run All @ ${ts}\nLine 1\n` });
+            // Read back
+            const r2 = await rpc('host.fs.readFileText', { uri: createdFileUri });
+            logLine({ readBackLen: r2?.content?.length ?? 0 }, 'ok');
+          } catch (e) { logLine(e.message, 'err'); }
+
+          // Write bytes via base64 and read bytes
+          try {
+            const b64 = toB64(`// bytes written @ ${ts}\n`);
+            await rpc('host.fs.writeFileBytes', { uri: createdFileUri, bytes: b64 });
+            const r3 = await rpc('host.fs.readFileBytes', { uri: createdFileUri });
+            logLine({ bytesB64Len: (r3?.bytes || '').length }, 'ok');
+          } catch (e) { logLine(e.message, 'err'); }
+
+          // File info
+          try { await rpc('host.fs.getFileInfo', { uri: createdFileUri }); } catch (e) { logLine(e.message, 'err'); }
+
+          // Open in editor, set content, save
+          try {
+            await rpc('host.editor.openDocument', { uri: createdFileUri });
+            const current = await rpc('host.editor.getCurrentContent', {});
+            const newContent = `// set by Run All @ ${ts}\n` + (current?.content || '');
+            await rpc('host.editor.setContent', { content: newContent });
+            await rpc('host.editor.saveActiveDocument', {});
+          } catch (e) { logLine(e.message, 'err'); }
+
+          // List files in working folder
+          try { await rpc('host.fs.listFiles', { directoryUri: createdDirUri || testDir }); } catch (e) { logLine(e.message, 'err'); }
+
+          // Optional: extract zip if provided
+          try {
+            const z = els.zipPath.value.trim();
+            if (z) { await rpc('host.fs.extractZip', { zipPath: z, targetDirectoryUri: createdDirUri || testDir }); }
+          } catch (e) { logLine(e.message, 'err'); }
+
+          // Optional: execute a command if provided
+          try {
+            const cid = els.cmdId.value.trim();
+            if (cid) {
+              let args = undefined;
+              const raw = els.cmdArgs.value.trim();
+              if (raw) { try { args = JSON.parse(raw); } catch (e) { logLine(`Invalid command args: ${e.message}`, 'err'); } }
+              await rpc('host.executeCommand', { id: cid, args });
+            }
+          } catch (e) { logLine(e.message, 'err'); }
+
+          // Cleanup: delete file, then directory
+          try { if (createdFileUri) await rpc('host.fs.deleteFile', { uri: createdFileUri }); } catch (e) { logLine(e.message, 'err'); }
+          try { if (createdDirUri) await rpc('host.fs.deleteFile', { uri: createdDirUri }); } catch (e) { logLine('(directory delete may fail if not empty)', 'warn'); }
+
+          // Native bridge (device.info via android.call)
+          try { await rpc('android.call', { method: 'device.info', params: {} }); } catch (e) { logLine(e.message, 'err'); }
+
+          try { await rpc('host.toast', { message: 'Run All complete ✅' }); } catch {}
+
+          logLine('=== Run All complete ===', 'ok');
+          els.btnRunAll.disabled = false;
         });
 
         // Send a small welcome ping
@@ -476,7 +567,7 @@
             window.ProCodingHost.postMessage(JSON.stringify({ type: 'panel:ping' }));
             logLine('→ panel:ping (init)', 'muted');
           } catch {}
-        }, 300);
+        }, 200);
       })();
     </script>
   </body>
